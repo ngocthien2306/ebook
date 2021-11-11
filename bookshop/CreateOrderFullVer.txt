@@ -1,0 +1,122 @@
+package com.paypal.business.CaptureIntent;
+
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
+
+import com.paypal.business.PayPalClient;
+//import com.braintreepayments.http.HttpResponse;
+import com.paypal.http.*;
+import com.paypal.orders.AddressPortable;
+import com.paypal.orders.AmountBreakdown;
+import com.paypal.orders.AmountWithBreakdown;
+import com.paypal.orders.ApplicationContext;
+import com.paypal.orders.Item;
+import com.paypal.orders.LinkDescription;
+import com.paypal.orders.Money;
+import com.paypal.orders.Name;
+import com.paypal.orders.Order;
+import com.paypal.orders.OrderRequest;
+import com.paypal.orders.OrdersCreateRequest;
+import com.paypal.orders.PurchaseUnitRequest;
+import com.paypal.orders.ShippingDetail;
+import com.google.gson.Gson;
+// DTO
+import com.paypal.DTOs.CreateOrder.*;
+
+public class CreateOrder extends PayPalClient {
+  public HttpResponse<Order> createOrder(CreateOrderDto createDto, boolean debug) throws IOException {
+    OrdersCreateRequest request = new OrdersCreateRequest();
+    request.prefer("return=representation");
+    request.requestBody(buildRequestBody(createDto));
+    // 3. Call PayPal to set up a transaction
+    HttpResponse<Order> response = client().execute(request);
+    if (debug) {
+      if (response.statusCode() == 201) {
+        System.out.println("Status Code: " + response.statusCode());
+        System.out.println("Status: " + response.result().status());
+        System.out.println("Order ID: " + response.result().id());
+        System.out.println("Intent: " + response.result().checkoutPaymentIntent());
+        System.out.println("Links: ");
+        for (LinkDescription link : response.result().links()) {
+          System.out.println("\t" + link.rel() + ": " + link.href() + "\tCall Type: " + link.method());
+        }
+        System.out
+            .println("Total Amount: " + response.result().purchaseUnits().get(0).amountWithBreakdown().currencyCode()
+                + " " + response.result().purchaseUnits().get(0).amountWithBreakdown().value());
+      }
+    }
+    return response;
+  }
+
+  private OrderRequest buildRequestBody(CreateOrderDto createDto) {
+
+    OrderRequest orderRequest = new OrderRequest();
+
+    // Tranfer data to orderRequest
+    orderRequest.checkoutPaymentIntent(createDto.intent);
+    orderRequest.applicationContext(tranferAppContext(createDto));
+    orderRequest.purchaseUnits(tranferPurchaseUnits(createDto));
+    return orderRequest;
+  }
+
+  private ApplicationContext tranferAppContext(CreateOrderDto createDto) {
+    return new ApplicationContext().brandName(createDto.application_context.brand_name)
+        .landingPage(createDto.application_context.landing_page)
+        .shippingPreference(createDto.application_context.shipping_preference);
+  }
+
+  private List<PurchaseUnitRequest> tranferPurchaseUnits(CreateOrderDto createDto) {
+    if (createDto.purchase_units == null || createDto.purchase_units.size() < 1)
+      return new ArrayList<PurchaseUnitRequest>();
+
+    List<PurchaseUnitRequest> purchaseUnitRequests = new ArrayList<PurchaseUnitRequest>();
+    for (PurchaseUnit purchaseUnit : createDto.purchase_units) {
+      PurchaseUnitRequest purchaseUnitRequest = new PurchaseUnitRequest().referenceId(purchaseUnit.reference_id)
+          .description(purchaseUnit.description).customId(purchaseUnit.custom_id)
+          .softDescriptor(purchaseUnit.soft_descriptor).amountWithBreakdown(tranferAmountWithBreakDown(purchaseUnit))
+          .items(tranferItemList(purchaseUnit)).shippingDetail(tranferShippingDetail(purchaseUnit));
+      purchaseUnitRequests.add(purchaseUnitRequest);
+    }
+    return purchaseUnitRequests;
+  }
+
+  private ArrayList<Item> tranferItemList(PurchaseUnit purchaseUnit) {
+    if (purchaseUnit.items == null || purchaseUnit.items.size() < 1)
+      return new ArrayList<Item>();
+
+    ArrayList<Item> rs = new ArrayList<Item>();
+    for (com.paypal.DTOs.CreateOrder.Item item : purchaseUnit.items) {
+      rs.add(new Item().name(item.name).description(item.description).sku(item.sku)
+          .unitAmount(new Money().currencyCode(item.unit_amount.currency_code).value(item.unit_amount.value))
+          .tax(new Money().currencyCode(item.tax.currency_code).value(item.tax.value)).quantity(item.quantity)
+          .category(item.category));
+    }
+    return rs;
+  }
+
+  private ShippingDetail tranferShippingDetail(PurchaseUnit purchaseUnit) {
+    return new ShippingDetail().name(new Name().fullName(purchaseUnit.shipping.address.name.full_name))
+        .addressPortable(new AddressPortable().addressLine1(purchaseUnit.shipping.address.address_line_1)
+            .addressLine2(purchaseUnit.shipping.address.address_line_2)
+            .adminArea2(purchaseUnit.shipping.address.admin_area_2)
+            .adminArea1(purchaseUnit.shipping.address.admin_area_1)
+            .postalCode(purchaseUnit.shipping.address.postal_code)
+            .countryCode(purchaseUnit.shipping.address.country_code));
+  }
+
+  private AmountWithBreakdown tranferAmountWithBreakDown(PurchaseUnit purchaseUnit) {
+    return new AmountWithBreakdown().currencyCode(purchaseUnit.amount.currency_code).value(purchaseUnit.amount.value)
+        .amountBreakdown(new AmountBreakdown()
+            .itemTotal(new Money().currencyCode(purchaseUnit.amount.breakdown.item_total.currency_code)
+                .value(purchaseUnit.amount.breakdown.item_total.value))
+            .shipping(new Money().currencyCode(purchaseUnit.amount.breakdown.shipping.currency_code)
+                .value(purchaseUnit.amount.breakdown.shipping.value))
+            .handling(new Money().currencyCode(purchaseUnit.amount.breakdown.handling.currency_code)
+                .value(purchaseUnit.amount.breakdown.handling.value))
+            .taxTotal(new Money().currencyCode(purchaseUnit.amount.breakdown.tax_total.currency_code)
+                .value(purchaseUnit.amount.breakdown.tax_total.value))
+            .shippingDiscount(new Money().currencyCode(purchaseUnit.amount.breakdown.shipping_discount.currency_code)
+                .value(purchaseUnit.amount.breakdown.shipping_discount.value)));
+  }
+}
