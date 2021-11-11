@@ -1,0 +1,26 @@
+@charset "ISO-8859-1";
+
+.container{
+	height: 100vh;
+}
+
+form{
+	width: 30%;
+	margin: auto;
+	padding: 3rem;
+	-webkit-box-shadow: 0px 0px 15px -2px #000000; 
+	box-shadow: 0px 0px 15px -2px #000000;
+	border-radius: 10px;
+}
+
+h2{
+	text-align: center;
+}
+
+form a{
+	float: right;
+}
+
+form button{
+	width: 100%;
+}
