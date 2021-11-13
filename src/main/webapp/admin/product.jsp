@@ -1,5 +1,5 @@
-<%@ page language="java" contentType="text/html; charset=ISO-8859-1"
-    pageEncoding="ISO-8859-1"%>
+<%@ page language="java" contentType="text/html; charset=UTF-8"
+pageEncoding="UTF-8" errorPage="error.jsp" isELIgnored="false"%> 
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
 <!DOCTYPE html>
 <html lang="en">
@@ -65,29 +65,71 @@
                                 <table class="table table-bordered" id="dataTable" width="100%" cellspacing="0">
                                     <thead>
                                         <tr>
-                                            <th>Name</th>
-                                            <th>Position</th>
-                                            <th>Office</th>
-                                            <th>Age</th>
-                                            <th>Start date</th>
-                                            <th>Salary</th>
-                                            <th>Active</th>
+                                            <th>NXB</th>
+                                            <th>SKU</th>
+                                            <th>Code</th>
+                                            <th>Author Name</th>
+                                            <th>Title</th>
+                                            <th>Price</th>
+											<th>Active</th>
                                         </tr>
                                     </thead>
+                                    <tbody>
+										<c:forEach var="item" items="${list}">
+										<c:url var="link" value="product">
+						                  <c:param name="command" value="Load" />
+						                  <c:param name="id" value="${item.id}" />
+						                </c:url>
+						                <c:url var="remove" value="product">
+						                  <c:param name="command" value="Delete" />
+						                  <c:param name="id" value="${item.id}" />
+						                </c:url>
+										<tr>
+                                            <th>${item.NXB}</th>
+                                            <th>${item.getSku()}</th>
+                                            <th>${item.codeProduct}</th>
+                                            <th>${item.nameAuthor}</th>
+                                            <th> <span
+												style="display: block;
+												width: 320px;
+												overflow: hidden;
+												white-space: nowrap;
+												text-overflow: ellipsis;">
+												${item.getProductName()}
+												</span>
+											</th>
+                                            <th>${item.price}</th>
+                                            <th>
+                                            	<a href="${link}">
+                                            		<input type="hidden" name="pId" value=""/>
+													<span><button type="submit"
+													style="border: none; color: #2196f3; background: transparent;"> 
+														<i class="fas fa-edit"></i> 
+													</button>  
+													</span>
+												</a>
+												<a href="${remove}">
+													<span><button type="submit"
+													style="border: none; color: #E74C3C; background: transparent;"> 
+														<i class="fas fa-trash-alt"></i> 
+													</button>  
+													</span>                                 	
+												</a>
+                                            </th>
+                                        </tr>
+										</c:forEach>
+									</tbody>
                                     <tfoot>
                                         <tr>
-                                            <th>Name</th>
-                                            <th>Position</th>
-                                            <th>Office</th>
-                                            <th>Age</th>
-                                            <th>Start date</th>
-                                            <th>Salary</th>
-                                            <th>Active</th>
+                                            <th>NXB</th>
+                                            <th>SKU</th>
+                                            <th>Code</th>
+                                            <th>Author Name</th>
+											<th>Title</th>
+                                            <th>Price</th>
+											<th>Active</th>
                                         </tr>
                                     </tfoot>
-									<tbody>
-										
-									</tbody>
                                 </table>
                             </div>
                         </div>
@@ -128,7 +170,7 @@
                 <div class="modal-header">
                     <h5 class="modal-title" id="exampleModalLabel">Ready to Leave?</h5>
                     <button class="close" type="button" data-dismiss="modal" aria-label="Close">
-                        <span aria-hidden="true">×</span>
+                        <span aria-hidden="true">Ã—</span>
                     </button>
                 </div>
                 <div class="modal-body">Select "Logout" below if you are ready to end your current session.</div>

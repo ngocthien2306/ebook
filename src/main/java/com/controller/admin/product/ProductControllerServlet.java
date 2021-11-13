@@ -13,7 +13,7 @@ import javax.servlet.http.HttpServletResponse;
 import com.data.DAOs.ProductDAO;
 import com.model.Product;
 
-@WebServlet("/admin/ProductControllerServlet")
+@WebServlet("/admin/product")
 public class ProductControllerServlet extends HttpServlet {
 	private static final long serialVersionUID = 1L;
     private ProductDAO productDAO;
@@ -38,42 +38,52 @@ public class ProductControllerServlet extends HttpServlet {
 			if(theCommand == null)
 				theCommand = "LIST";
 			switch(theCommand) {
-				case "LIST":
+				case "Product":
 					listProduct(request, response);
 					break;
 				case "ADD":
 					addProduct(request, response);
 					break;
-				case "LOAD":
+				case "Load":
 					loadProduct(request, response);
 					break;
-				case "UPDATE":
+				case "Update":
 					updateProduct(request, response);
 					break;
+				case "Delete":
+					deleteProduct(request, response);
 				default:
 					listProduct(request, response);
 			}
-			listProduct(request, response);
 			
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
 	}
+	private void deleteProduct(HttpServletRequest request, HttpServletResponse response) throws Exception {
+		int id = Integer.parseInt(request.getParameter("id"));
+		productDAO.deleteProduct(id);
+		listProduct(request, response);
+		
+	}
 	private void updateProduct(HttpServletRequest request, HttpServletResponse response) throws Exception {
-		String name = request.getParameter("name");
+		String nameAuthor = request.getParameter("author");
+		String nxb = request.getParameter("nxb");
+		String nameItem = request.getParameter("nameItem");
 		String description = request.getParameter("description");
 		int price = Integer.parseInt(request.getParameter("price"));
-		Product theProduct = new Product(name, description, price, "");
+		int id = Integer.parseInt(request.getParameter("id"));
+		String supplier = request.getParameter("supplier");
+		Product theProduct = new Product(id ,nameAuthor, description, nameItem, nxb, supplier, price);
 		productDAO.updateProducts(theProduct);
 		listProduct(request, response);
 		
 	}
 	private void loadProduct(HttpServletRequest request, HttpServletResponse response) throws Exception {
-		String theProductId = request.getParameter("ProductId");
+		String theProductId = request.getParameter("id");
 		Product theProduct = productDAO.getProduct(Integer.parseInt(theProductId));
-		request.setAttribute("The_product", theProduct);
-		RequestDispatcher dispatcher = request.getRequestDispatcher("/admin/update-product.jsp");
-		dispatcher.forward(request, response);
+		request.setAttribute("item", theProduct);
+		request.getRequestDispatcher("loadForm.jsp").forward(request, response);
 	}
 	private void addProduct(HttpServletRequest request, HttpServletResponse response) throws Exception {
 		String name = request.getParameter("name");
@@ -84,24 +94,14 @@ public class ProductControllerServlet extends HttpServlet {
 		listProduct(request, response);
 	}
 	private void listProduct(HttpServletRequest request, HttpServletResponse response) throws Exception {
-		List<Product> product = productDAO.getProducts();
-		request.setAttribute("list_product", product);
-		String theCommand = request.getParameter("command");
-		
-		if(theCommand == null)
-			theCommand = "LIST";
-		switch(theCommand) {
-			case "Product":
-				status = "/admin/home-management-product.jsp";
-				break;
-			case "Employee":
-				status = "/admin/home-management-employee.jsp";
-				break;
-			default:
-				status = "/home.jsp";
+		List<Product> product = null;
+		try {
+			product = productDAO.getProducts();
+			request.setAttribute("list", product);
+		} catch (Exception e) {
+			log("productDao error", e);
 		}
-		RequestDispatcher dispatcher = request.getRequestDispatcher("/admin/product.jsp");
-		dispatcher.forward(request, response);
+		request.getRequestDispatcher("product.jsp").forward(request, response);
 	}
 	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		doGet(request, response);

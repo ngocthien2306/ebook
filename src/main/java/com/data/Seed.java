@@ -1,5 +1,6 @@
 package com.data;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import com.DTOs.BusinessDtos.RegisterDTO;
@@ -16,7 +17,7 @@ import com.services.HashService;
 public class Seed {
     public void doSeed() {
         // Add role
-    	User user = new User();
+        User user = new User();
         RoleDAO roleDAO = new RoleDAO();
         roleDAO.addRole(new Role("Admin"));
         roleDAO.addRole(new Role("Staff"));
@@ -35,7 +36,6 @@ public class Seed {
         registerDTO1.setRole("Customer");
         CreateAccount(registerDTO);
         CreateAccount(registerDTO1);
-        
 
         // Add category
         CategoryDAO categoryDAO = new CategoryDAO();
@@ -45,16 +45,12 @@ public class Seed {
 
         // Add product and add category for product
         ProductDAO productDAO = new ProductDAO();
-        Product product = new Product("B1","Thien Nguyen", "Have a nice day", 20000, "Classic");
-        Product product1 = new Product("B2","Dat Ngo", "Go to the moon", 30000, "Romance");
-        Product product2 = new Product("B3","Duong le", "Meme", 25000, "Comedy");
-        Product product3 = new Product("B4","Dat Tran", "Good job", 25000, "Buisiness");
-        Product product4 = new Product("B5","Thuy Nguyen", "Go to the moon", 35000, "Romance");
-        productDAO.addProducts(product);
-        productDAO.addProducts(product1);
-        productDAO.addProducts(product2);
-        productDAO.addProducts(product3);
-        productDAO.addProducts(product4); 
+
+        ArrayList<Product> products = DataUtil.getCrawlData();
+
+        for (Product product : products) {
+            productDAO.addProducts(product);
+        }
     }
 
     private void CreateAccount(RegisterDTO registerDTO) {

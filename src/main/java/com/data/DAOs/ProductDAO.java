@@ -1,6 +1,10 @@
 package com.data.DAOs;
 
 import java.util.List;
+
+import javax.persistence.EntityManager;
+import javax.persistence.EntityTransaction;
+
 import org.hibernate.*;
 import com.data.DbUtil;
 import com.model.Product;
@@ -35,21 +39,29 @@ public class ProductDAO {
 	}
 
 	public void updateProducts(Product product) {
-		Transaction transaction = null;
-		try (Session session = DbUtil.getSessionFactory().openSession()) {
-
-			transaction = session.beginTransaction();
-			session.update(product);
-			transaction.commit();
-		} catch (Exception e) {
-			if (transaction != null) {
-				transaction.rollback();
-			}
+		EntityManager em = DbUtil.getSessionFactory().createEntityManager();
+		EntityTransaction trans = em.getTransaction();
+		trans.begin();
+		try {
+			Product theProduct = em.find(Product.class, product.getId());
+			theProduct.setNameAuthor(product.getNameAuthor());
+			theProduct.setNXB(product.getNXB());
+			theProduct.setProductName(product.getProductName());
+			theProduct.setDescription(product.getDescription());
+			theProduct.setPrice(product.getPrice());
+			theProduct.setSupplier(product.getSupplier());
+			em.merge(theProduct);
+			trans.commit();
+		}
+		catch (Exception e) {
 			e.printStackTrace();
+		} 
+		finally {
+			em.close();
 		}
 	}
 
-	public Product deleteProduct(int id) {
+	public void deleteProduct(int id) {
 		Transaction transaction = null;
 		Product product = null;
 		try (Session session = DbUtil.getSessionFactory().openSession()) {
@@ -68,7 +80,6 @@ public class ProductDAO {
 			}
 			e.printStackTrace();
 		}
-		return product;
 	}
 
 	public Product getProduct(int id) {

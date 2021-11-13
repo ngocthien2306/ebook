@@ -5,6 +5,7 @@ import java.util.List;
 import javax.persistence.EntityManager;
 import javax.persistence.EntityTransaction;
 import javax.persistence.criteria.*;
+import javax.persistence.Query;
 
 import com.DTOs.BusinessDtos.LoginDTO;
 import com.data.DbUtil;
@@ -32,12 +33,28 @@ public class UserDAO {
 		}
 		return user;
 	}
-	public Role getRole(int id) {
+	public int getUserByUserName(String username) {
 		EntityManager em = DbUtil.getSessionFactory().createEntityManager();
-		EntityTransaction trans = em.getTransaction();
-		String Sql = "Select r From Role r ";
-		return null;
+		EntityTransaction trans =  em.getTransaction();
+		String sql = "Select roles from User where username =:uname";
+		Query q = em.createQuery(sql);
+		q.setParameter("uname", username);
+		try {
+			trans.begin();
+			int id = q.getFirstResult();
+			trans.commit();
+			return id;
+		}
+		catch (Exception e) {
+			e.printStackTrace();
+		}
+		finally {
+			em.close();
+		}
+		return 0;
 	}
+	
+
 	public void getPasswordHashAndSalt(LoginDTO loginDTO) {
 		Transaction transaction = null;
 		List<User> rsList = null;

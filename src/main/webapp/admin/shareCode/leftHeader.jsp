@@ -40,8 +40,8 @@
                 <form action="employee.jsp" method="get">
                   	<a class="collapse-item"> <input type="submit" name="command" value="Employee"  style="border: none; background: none; margin-left: -6px"/></a>
                 </form>
-                <form action="ProductControllerServlet" method="get">
-                  	<a class="collapse-item"> <input type="submit" name="command" value="Product"  style="border: none; background: none; margin-left: -6px"/></a>
+                <form action="product" method="get">
+                  	<a class="collapse-item"> <input type="submit" name="command" value="Product"  style="border: none; background: none; margin-left: -6px; flex: 1;"/></a>
                 </form>
             </div>
         </div>
@@ -56,7 +56,7 @@
     <div class="sidebar-heading">
         Addons
     </div>
-
+	
     <!-- Nav Item - Pages Collapse Menu -->
     <li class="nav-item">
         <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#collapsePages"
@@ -67,20 +67,16 @@
         <div id="collapsePages" class="collapse" aria-labelledby="headingPages" data-parent="#accordionSidebar">
             <div class="bg-white py-2 collapse-inner rounded">
                 <h6 class="collapse-header">Login Screens:</h6>
-                <a class="collapse-item" href="login.jsp">Login</a>
-                <a class="collapse-item" href="register.jsp">Register</a>
-                <a class="collapse-item" href="forgot-password.jsp">Forgot Password</a>
+                <a class="collapse-item" href="login">Login</a>
+                <a class="collapse-item" href="register">Register</a>
+                <a class="collapse-item" href="forgot-password">Forgot Password</a>
                 <div class="collapse-divider"></div>
             </div>
         </div>
     </li>
 
-
-
-    <!-- Divider -->
     <hr class="sidebar-divider d-none d-md-block">
 
-    <!-- Sidebar Toggler (Sidebar) -->
     <div class="text-center d-none d-md-inline">
         <button class="rounded-circle border-0" id="sidebarToggle"></button>
     </div>

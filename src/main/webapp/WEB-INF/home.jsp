@@ -1,4 +1,4 @@
-<%@ page language="java" contentType="text/html; charset=ISO-8859-1"
+<%@ page language="java" contentType="text/html; charset=UTF-8"
 	pageEncoding="ISO-8859-1" errorPage="error.jsp"%>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
 
@@ -61,7 +61,7 @@
 
           <div class="home-filter">
             <span class="home-label">Sorting by</span>
-            <button class="btn-product home-filter-btn">Popular</button>
+            <button class="btn-product home-filter-btn">${role} ${username}</button>
             <button class="btn-product btn-primary home-filter-btn">Newest</button>
             <button class="btn-product home-filter-btn">Selling</button>
             <div class="select-input">
@@ -98,14 +98,14 @@
                   <c:param name="command" value="LOAD" />
                   <c:param name="productID" value="${product.id}" />
                 </c:url>
-                <div class="grid_column-2-5">
 
+                <div class="grid_column-2-5">
                   <div class="card-trending">
                     <div class="product-item border-card">
                       <a class="card-link-product" href="${link}">
-                        <div class="product-item-img" style="background-image: url(https://kbimages1-a.akamaihd.net/a1f2ad30-328f-4e97-9b15-9c527ba1b00b/140/215/60/False/stolen-ones.jpg);"></div>
+                        <div class="product-item-img" style="background-image: url(${product.pictureUrl});"></div>
                       </a>
-                      <p class="trending-item-name">${product.description}</p>
+                      <p class="trending-item-name">${product.getProductName()}</p>
                       <p class="trending-item-author">${product.nameAuthor}</p>
                       <div class="product-action">
                         <span class="product-action-heart product-action-liked">

@@ -10,7 +10,7 @@ import org.hibernate.*;
 
 import com.data.DbUtil;
 import com.model.CardList;
-import com.model.Product;
+
 
 public class CartDao {
 	

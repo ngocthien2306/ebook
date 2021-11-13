@@ -58,7 +58,6 @@ public class User implements Serializable {
 			Date bdate, String fname, String lname, String email, String gender) {
 		//this.orders = orders;
 		this.roles = roles;
-
 		this.id = id;
 		this.username = username;
 		this.passwordHash = passwordHash;
@@ -118,7 +117,7 @@ public class User implements Serializable {
 			registerDTO.setCode(EmailService.getRandom());
 			String host = context.getInitParameter("host");
 			String port = context.getInitParameter("port");
-			String seeder = context.getInitParameter("username");
+			String seeder = context.getInitParameter("c");
 			String pass = context.getInitParameter("pass");
 			EmailService.sendEmail(host, port, seeder, pass, registerDTO.getEmail(), "Email Verification",
 					"Registered successfully.Please verify your account using this code: " + registerDTO.getCode());

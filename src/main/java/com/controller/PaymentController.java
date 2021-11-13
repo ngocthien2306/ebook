@@ -86,8 +86,8 @@ public class PaymentController extends HttpServlet {
         Product product = null;
 
         product = productDao.getProduct(Integer.parseInt(productId));
-        if(!cartDao.checkNameExist(product.getDescription(), uname)) {
-            CardList cart = new CardList(uname, product.getDescription(), 
+        if(!cartDao.checkNameExist(product.codeProduct, uname)) {
+            CardList cart = new CardList(product.getCodeProduct(), uname, product.getProductName(), 
             		product.getNameAuthor(), Integer.parseInt(quantityString), product.getPrice());
 
             cartDao.addToCart(cart);

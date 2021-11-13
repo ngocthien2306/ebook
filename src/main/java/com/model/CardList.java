@@ -17,10 +17,11 @@ public class CardList implements Serializable {
 	public String name;
 	public String author;
 	public int amount;
-	public double total;
+	public String codeProduct;
 	public CardList() {}
-	public CardList(String uid, String name, String author, int amount, int price) {
+	public CardList(String code,String uid, String name, String author, int amount, int price) {
 		super();
+		this.codeProduct = code;
 		this.username = uid;
 		this.name = name;
 		this.author = author;
@@ -65,9 +66,19 @@ public class CardList implements Serializable {
 		this.amount = amount;
 	}
 	public double totalPrice() {
-		total +=  this.amount * getPrice();
-		return total;
+		return this.amount * getPrice();
 	}
-
+	public String getUsername() {
+		return username;
+	}
+	public void setUsername(String username) {
+		this.username = username;
+	}
+	public String getbId() {
+		return codeProduct;
+	}
+	public void setbId(String code) {
+		this.codeProduct = code;
+	}
 	
 }

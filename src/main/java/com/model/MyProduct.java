@@ -1,8 +1,6 @@
 package com.model;
 
 import java.io.Serializable;
-import java.sql.Timestamp;
-
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -19,12 +17,21 @@ public class MyProduct implements Serializable{
 	public int id;
 	public String username;
 	public String author;
+	public String nameProduct;
 	
+
 	public MyProduct() {}
-	public MyProduct(String username, String author) {
+	public MyProduct(String username, String author, String name) {
 		super();
 		this.username = username;
 		this.author = author;
+		this.nameProduct = name;
+	}
+	public String getNameProduct() {
+		return nameProduct;
+	}
+	public void setNameProduct(String nameProduct) {
+		this.nameProduct = nameProduct;
 	}
 	public int getId() {
 		return id;
